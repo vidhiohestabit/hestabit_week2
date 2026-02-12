@@ -177,3 +177,173 @@ Each accordion item contains:
 .item.active .content {
   display: block;
 }
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Here is your copy-paste ready README.md starting with DAY 4 Topic as requested:
+
+📅 DAY 4 – JS Utilities + LocalStorage Mini-Project
+🔹 Learning Outcomes
+
+Modular JavaScript functions
+
+LocalStorage persistence
+
+Custom utility functions (debounce, throttle, groupBy)
+
+Debugging using DevTools (breakpoints, watch)
+
+Error handling using try/catch
+
+Logging errors in logs/errors.md
+
+📝 Modular Todo App – Project Description
+
+This project is a Todo Application built using Vanilla JavaScript with a modular architecture.
+
+It demonstrates:
+
+Clean code structure
+
+Separation of concerns
+
+Data persistence using LocalStorage
+
+Reusable utility functions
+
+Error-safe coding practices
+
+The application stores todos in LocalStorage, so data remains saved even after refreshing the page.
+
+📂 Project Structure
+day4/
+│
+├── index.html
+├── js/
+│   ├── main.js
+│   ├── storage.js
+│   ├── ui.js
+│   ├── utils.js
+│
+└── logs/
+    └── errors.md
+
+⚙️ Features
+
+✅ Add Todo
+✅ Delete Todo
+✅ Persistent Storage
+✅ Debounced Input Handling
+✅ Modular Code Structure
+✅ Error Handling
+
+🔄 Application Flow
+1️⃣ Initial Load
+
+main.js executes
+
+Calls getTodos() from storage.js
+
+Todos fetched from LocalStorage
+
+renderTodos() displays them
+
+2️⃣ Add Todo
+
+User enters text
+
+Clicks Add button
+
+New todo object created
+
+Saved using saveTodos()
+
+UI re-renders
+
+3️⃣ Delete Todo
+
+Delete button clicked
+
+Todo removed from array
+
+Updated array saved to LocalStorage
+
+UI updated
+
+🧠 Key Concepts Used
+🔹 Modular JavaScript
+
+Each file has a single responsibility:
+
+main.js → App logic
+
+storage.js → LocalStorage handling
+
+ui.js → DOM rendering
+
+utils.js → Utility functions
+
+This makes the code scalable and maintainable.
+
+🔹 LocalStorage Persistence
+
+Saving data:
+
+localStorage.setItem("todos", JSON.stringify(todos))
+
+
+Retrieving data:
+
+JSON.parse(localStorage.getItem("todos"))
+
+🔹 Debounce Utility
+
+Used to limit how often a function runs.
+
+Example:
+
+export function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+🔹 Error Handling
+
+Used try/catch to prevent crashes:
+
+try {
+  const todos = JSON.parse(localStorage.getItem("todos")) || [];
+} catch (error) {
+  console.error("Error loading todos:", error);
+}
+
+
+Errors can also be logged in:
+
+logs/errors.md
+
+🛠 Debugging
+
+Use Chrome DevTools:
+
+Console tab
+
+Sources → Add breakpoints
+
+Watch variables
+
+Application → Check LocalStorage
+
+🚀 How to Run
+
+Open project folder
+
+Open index.html in browser
+
+OR use Live Server in VS Code.
