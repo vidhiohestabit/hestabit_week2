@@ -1,27 +1,41 @@
 import { getTodos, saveTodos } from "./storage.js";
 import { renderTodos } from "./ui.js";
-import { debounce } from "./utils.js";
+import { debounce, throttle, groupBy } from "./utils.js";
 
 const todoInput = document.getElementById("todoInput");
 const addBtn = document.getElementById("addBtn");
-const todoList = document.getElementById("todoList");
 const searchInput = document.getElementById("searchInput");
 
-// Always treat IDs as STRINGS (prevents mismatch bugs)
+const pendingList = document.getElementById("pendingList");
+const completedList = document.getElementById("completedList");
+
 let todos = getTodos().map(todo => ({
   ...todo,
   id: String(todo.id)
 }));
 
-renderTodos(todos, todoList);
+function renderGroupedTodos(data = todos) {
+
+  const grouped = groupBy(data, "completed");
+
+  const pending = grouped.false || [];
+  const completed = grouped.true || [];
+
+  renderTodos(pending, pendingList);
+  renderTodos(completed, completedList);
+}
+
+renderGroupedTodos();
+
 
 // ADD TODO
 addBtn.addEventListener("click", () => {
+
   const text = todoInput.value.trim();
   if (!text) return;
 
   const newTodo = {
-    id: Date.now().toString(), // store as string always
+    id: Date.now().toString(),
     text,
     completed: false
   };
@@ -29,17 +43,19 @@ addBtn.addEventListener("click", () => {
   todos = [...todos, newTodo];
 
   saveTodos(todos);
-  renderTodos(todos, todoList);
+  renderGroupedTodos();
 
   todoInput.value = "";
 });
 
-// DELETE + EDIT (SAFE VERSION)
-todoList.addEventListener("click", (e) => {
+
+// DELETE + EDIT + TOGGLE
+document.addEventListener("click", (e) => {
+
   const button = e.target.closest("button");
   if (!button) return;
 
-  const id = button.dataset.id; // already string
+  const id = button.dataset.id;
 
   // DELETE
   if (button.classList.contains("delete")) {
@@ -48,6 +64,7 @@ todoList.addEventListener("click", (e) => {
 
   // EDIT
   if (button.classList.contains("edit")) {
+
     const todoToEdit = todos.find(todo => todo.id === id);
     if (!todoToEdit) return;
 
@@ -62,18 +79,42 @@ todoList.addEventListener("click", (e) => {
     }
   }
 
+  // TOGGLE COMPLETE
+  if (button.classList.contains("toggle")) {
+
+    todos = todos.map(todo =>
+      todo.id === id
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    );
+  }
+
   saveTodos(todos);
-  renderTodos(todos, todoList);
+  renderGroupedTodos();
 });
 
-// SEARCH (Debounced)
+
+// SEARCH
 searchInput.addEventListener(
   "input",
   debounce((e) => {
+
     const value = e.target.value.toLowerCase();
+
     const filtered = todos.filter(todo =>
       todo.text.toLowerCase().includes(value)
     );
-    renderTodos(filtered, todoList);
+
+    renderGroupedTodos(filtered);
+
   }, 300)
+);
+
+//throttle
+
+window.addEventListener(
+  "scroll",
+  throttle(() => {
+    console.log("User is scrolling...");
+  }, 500)
 );
